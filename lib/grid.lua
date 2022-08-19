@@ -30,6 +30,8 @@ _ENV.Grid = function()
         end
     end
 
+    ---@param X number
+    ---@param Y number
     local function GetLightLevel(X,Y)
         if (X > 0 and Y > 0 and Y < res.y and X < res.x) then
             X = math.floor(X)
@@ -39,10 +41,15 @@ _ENV.Grid = function()
         end
     end
 
+    ---@param X number
+    ---@param Y number
+    ---@param Value number
     local function SetLightLevel(X,Y,Value)
-        if (X > 0 and Y > 0 and Y < res.y and X < res.x) then
+        if (X >= 1 and Y >= 1 and Y < res.y and X < res.x) then
             X = math.floor(X)
             Y = math.floor(Y)
+            _ENV.debug.x = X 
+            _ENV.debug.y = Y
             grid[Y][X] = Value
         end
     end

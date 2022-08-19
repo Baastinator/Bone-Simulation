@@ -8,7 +8,7 @@
 ---@param y number y positon
 ---@param vX number x velocity
 ---@param vY number y velocity
----@param fixed boolean fixed position
+---@param fixed? boolean fixed position
 ---@return point 
 _ENV.point = function (x, y, vX, vY, fixed)
     do -- input validation

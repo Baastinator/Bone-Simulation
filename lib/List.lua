@@ -14,6 +14,7 @@ end
 
 ---@param index number id to pull
 local function get(self,index)
+    if (type(self) ~= "table") then error("function needs to be executed on list",2) end
     if #self < index then error(Type.." List get: Outside range",2) end
     return self[index]
 end

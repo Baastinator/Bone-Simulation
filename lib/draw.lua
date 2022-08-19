@@ -54,7 +54,7 @@ _ENV.Draw = function()
             for i,v in ipairs(P) do
                 term.drawPixels(
                     (x+v[1])*PixelSize,
-                    yPosCorrection,
+                    Grid.res.y-yPosCorrection,
                     v[3],
                     PixelSize*(v[2]),
                     PixelSize

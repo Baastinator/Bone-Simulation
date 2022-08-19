@@ -35,7 +35,7 @@ local matrix = {
         return m
     end,
     tostring = function(self)
-        if (type(self) ~= "table" or self.type ~= "mat") then error("function needs to be called on matrix",2) end
+        if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("function needs to be called on matrix",2) end
         local size = self:getSize()
         local str = ""
         for y=1,size.y do
@@ -57,8 +57,8 @@ local matrix = {
         return str
     end,
     add = function(self,b)
-        if (type(self) ~= "table" or self.type ~= "mat") then error("fist input needs to be matrix",2) end
-        if (type(b) ~= "table" or b.type ~= "mat") then error("second input needs to be matrix",2) end
+        if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("fist input needs to be matrix",2) end
+        if (type(b) ~= "table" or b.Type:match("mat") ~= "mat") then error("second input needs to be matrix",2) end
         local size = self:getSize()
         local m = mat(size.x, size.y)
         for y=1,size.y do
@@ -69,8 +69,8 @@ local matrix = {
         return m
     end,
     subtract = function(self,b)
-        if (type(self) ~= "table" or self.type ~= "mat") then error("fist input needs to be matrix",2) end
-        if (type(b) ~= "table" or b.type ~= "mat") then error("second input needs to be matrix",2) end
+        if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("fist input needs to be matrix",2) end
+        if (type(b) ~= "table" or b.Type:match("mat") ~= "mat") then error("second input needs to be matrix",2) end
         local size = self:getSize()
         local m = mat(size.x, size.y)
         for y=1,size.y do
@@ -81,7 +81,7 @@ local matrix = {
         return m
     end,
     transpose = function (self)
-        if (type(self) ~= "table" or self.type ~= "mat") then error("function needs to be called on matrix",2) end
+        if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("function needs to be called on matrix",2) end
         local size = self:getSize()
         local m = mat(size.x, size.y)
         for y=1,size.y do
@@ -94,24 +94,24 @@ local matrix = {
     multiply = function (self,b)
         if (type(self) == "table" and type(b) == "number") or (type(self) == "number" and type(b) == "table") then
             local A, B
-            if (type(self) == table) then
-                if (self.type ~= "mat") then error("bad types",2) end
+            if (type(self) == "table") then
+                if not (self.type == "mat" or self.type == "mat.vec") then error("bad types",2) end
                 A = self
                 B = b
             else
                 A = b
                 B = self
             end
-            local size = self:getSize()
+            local size = A:getSize()
             local m = mat(size.x,size.y)
             for y=1,size.y do
                 for x=1,size.x do
-                    m:set(x,y,self:get(x,y)*B)
+                    m:set(x,y,A:get(x,y)*B)
                 end
             end
             return m
         elseif (type(self) == "table" and type(b) == "table") then
-            if (self.type ~= "mat" or b.type ~= "mat") then error("bad types",2) end
+            if (self.Type:match("mat") ~= "mat" or b.Type:match("mat") ~= "mat") then error("bad types",2) end
             local aSize = self:getSize()
             local bSize = b:getSize()
             local ay, ax = aSize.y, aSize.x
@@ -132,7 +132,7 @@ local matrix = {
     end,
     set = function ( self, x, y, val )
         do --input validation
-            if (type(self) ~= "table" or self.type ~= "mat") then error("setter needs to be executed on matrix",2) end
+            if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("setter needs to be executed on matrix",2) end
             if (type(x) ~= "number" and x == math.floor(x)) then error("x position needs to be integer",2) end
             if (type(y) ~= "number" and y == math.floor(y)) then error("y position needs to be integer",2) end
             if (type(val) ~= "number") then error("input needs to be number",2) end
@@ -141,7 +141,7 @@ local matrix = {
     end,
     get = function ( self, x, y )
         do --input validation
-            if (type(self) ~= "table" or self.type ~= "mat") then error("setter needs to be executed on matrix",2) end
+            if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("setter needs to be executed on matrix",2) end
             if (type(x) ~= "number" and x == math.floor(x)) then error("x position needs to be integer",2) end
             if (type(y) ~= "number" and y == math.floor(y)) then error("y position needs to be integer",2) end
         end
@@ -149,7 +149,7 @@ local matrix = {
     end,
     singleAdd = function ( self, x, y, val )
         do --input validation
-            if (type(self) ~= "table" or self.type ~= "mat") then error("setter needs to be executed on matrix",2) end
+            if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("setter needs to be executed on matrix",2) end
             if (type(x) ~= "number" and x == math.floor(x)) then error("x position needs to be integer",2) end
             if (type(y) ~= "number" and y == math.floor(y)) then error("y position needs to be integer",2) end
             if (type(val) ~= "number") then error("input needs to be number",2) end
@@ -157,12 +157,12 @@ local matrix = {
         self:set(x,y,self:get(x,y)+val)
     end,
     getSize = function(self)
-        if (type(self) ~= "table" or self.type ~= "mat") then error("function needs to be called on matrix",2) end
+        if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("function needs to be called on matrix",2) end
         return {x=self.xSize,y=self.ySize}
     end,
     vecSet = function(self,y,val)
         do --input validation
-            if (type(self) ~= "table" or self.type ~= "mat") then error("setter needs to be executed on matrix",2) end
+            if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("setter needs to be executed on matrix",2) end
             if (type(y) ~= "number" and y == math.floor(y)) then error("position needs to be integer",2) end
             if (type(val) ~= "number") then error("input needs to be number",2) end
         end
@@ -170,18 +170,19 @@ local matrix = {
     end,
     vecGet = function(self,y) 
         do --input validation
-            if (type(self) ~= "table" or self.type ~= "mat") then error("setter needs to be executed on matrix",2) end
+            if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("setter needs to be executed on matrix",2) end
             if (type(y) ~= "number" and y == math.floor(y)) then error("position needs to be integer",2) end
         end
         return self:get(1,y)
     end,
     vecAdd = function(self,y,val) 
         do --input validation
-            if (type(self) ~= "table" or self.type ~= "mat") then error("setter needs to be executed on matrix",2) end
+            if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("setter needs to be executed on matrix",2) end
             if (type(y) ~= "number" and y == math.floor(y)) then error("position needs to be integer",2) end
             if (type(val) ~= "number") then error("input needs to be number",2) end
         end
         self:add(1,y,val)
+        self.Type = "mat.vec"
     end,
     fill = function(self, content)
         for i=1,#content do
@@ -191,7 +192,7 @@ local matrix = {
     end,
     determinant = function(self)
         local size = self:getSize()
-        if (type(self) ~= "table" or self.type ~= "mat") then error("determinant needs to be called on matrix",2) end
+        if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("determinant needs to be called on matrix",2) end
         if (size.x ~= size.y) then error("Invalid dimensions",2) end
         local det2x2 = function(self) 
             return self[1]*self[4]-self[2]*self[3]
@@ -227,7 +228,7 @@ local matrix = {
     end,
     pow = function(self,b)
         do --input validation
-            if (type(self) ~= "table" or self.type ~= "mat") then error("function needs to be called on matrix",2) end
+            if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("function needs to be called on matrix",2) end
             if (self.xSize ~= self.ySize) then error("base matrix must be square",2) end
             if (type(b) ~= "number") then error("power needs to be number",2) end
             if (math.floor(b) ~= b or b < 0) then error("matpower: bad power",2) end
@@ -241,7 +242,7 @@ local matrix = {
     end,
     exp = function(self, it)
         if not it then it = 50 end
-        if (type(self) ~= "table" or self.type ~= "mat") then error("function needs to be called on matrix",2) end
+        if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("function needs to be called on matrix",2) end
         if (type(it) ~= "number") then error("iteration count needs to be number",2) end
         if (math.floor(it) ~= it or it <= 0) then error("bad iteration count",2) end
         local sum = mat().identity(self.xSize)
@@ -253,7 +254,7 @@ local matrix = {
         return sum
     end,
     fakeln = function(self)
-        if (type(self) ~= "table" or self.type ~= "mat") then error("function needs to be called on matrix",2) end
+        if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("function needs to be called on matrix",2) end
         if not (self.xSize == 2 and self.ySize == 2 and self[1] == self[4] and self[2] == -self[3]) then
             error("bad input, please use complex form matrix",2)
         end
@@ -268,7 +269,7 @@ local matrix = {
         return m
     end,
     minus = function(self)
-        if (type(self) ~= "table" or self.type ~= "mat") then error("function needs to be called on matrix",2) end
+        if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("function needs to be called on matrix",2) end
         for i=1,self.xSize*self.ySize do
             self[i] = -self[i]
         end
@@ -276,7 +277,7 @@ local matrix = {
     end,
     inverse = function(self)
         do --input validation
-            if (type(self) ~= "table" or self.type ~= "mat") then error("function needs to be called on matrix",2) end
+            if (type(self) ~= "table" or self.Type:match("mat") ~= "mat") then error("function needs to be called on matrix",2) end
             if (self.xSize ~= self.ySize) then error("MatInverse: Matrix needs to be square",2) end
             if (self:det() == 0) then error("MatInverse: determinant cannot be 0",2) end
         end
