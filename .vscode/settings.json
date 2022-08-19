@@ -1,0 +1,21 @@
+{
+  "Lua.diagnostics.globals": [
+    "parallel",
+    "sleep",
+    "term",
+    "keys",
+    "colors",
+    "fs",
+    "shell",
+    "write",
+    "read",
+    "debugLog",
+    "ccemux",
+    "printError"
+  ],
+  "git.enabled": true,
+  "Lua.diagnostics.disable": [
+    "deprecated",
+    "unknown-cast-variable"
+  ],
+}
