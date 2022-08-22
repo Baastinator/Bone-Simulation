@@ -8,7 +8,7 @@
 ---@field public setPalette function
 
 ---@return drawer
-_ENV.Draw = function()
+local function Draw()
     local PixelSize = 1 --KEEP AT 2
 
     local function lightLevelToCol(D)
@@ -102,3 +102,5 @@ _ENV.Draw = function()
         setPalette = setPalette
     }
 end
+
+return Draw

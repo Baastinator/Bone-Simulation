@@ -6,7 +6,7 @@
 ---@param A point 
 ---@param B point
 ---@return bone
-_ENV.bone = function (A, B)
+local function bone(A, B)
     do -- input validation
     end
     return setmetatable({
@@ -15,3 +15,5 @@ _ENV.bone = function (A, B)
         length = (B.pos - A.pos):length()
     },{})
 end
+
+return bone

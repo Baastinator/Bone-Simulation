@@ -43,7 +43,7 @@ end
 ---@generic T
 ---@param type string type of list
 ---@return list
-_ENV.List = function(type)
+local function List(type)
     Type = type
     return setmetatable({
         type = "list."..Type,
@@ -57,3 +57,5 @@ _ENV.List = function(type)
         }
     })
 end
+
+return List

@@ -1,4 +1,4 @@
-_ENV.Mathb = {
+local Mathb = {
     factorial = function( a ) 
         if not (type(a) == "number") then error("input needs to be non-negative integer",2) end
         if (math.floor(a) ~= a or a < 0) then error("factorial: bad input",2) end
@@ -38,3 +38,5 @@ _ENV.Mathb = {
         return (P1[2] + m * (pos - P1[1]))
     end
 }
+
+return Mathb

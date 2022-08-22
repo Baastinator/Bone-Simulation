@@ -24,6 +24,9 @@
 
 ---@class vector: matrix
 
+local Mathb = require('mathb')
+
+local vec, mat
 
 local matrix = {
     identity = function(size)
@@ -95,7 +98,7 @@ local matrix = {
         if (type(self) == "table" and type(b) == "number") or (type(self) == "number" and type(b) == "table") then
             local A, B
             if (type(self) == "table") then
-                if not (self.type == "mat" or self.type == "mat.vec") then error("bad types",2) end
+                if not (self.type:match("mat") == "mat") then error("bad types",2) end
                 A = self
                 B = b
             else
@@ -329,7 +332,7 @@ local MT = {
 ---@param X? number amount of columns in the matrix
 ---@param Y? number amount of rows in the matrix
 ---@return matrix
-_ENV.mat = function(X,Y)
+mat = function(X,Y)
     if (X == nil and Y == nil) then return setmetatable({},MT) end
     local T = {}
     for i=1,X*Y do T[i] = 0 end
@@ -342,7 +345,7 @@ end
 ---@param input table table of vector elements
 ---@param mode? string mode of vector creation, 'polar' for polar coordinates. 2D only
 ---@return vector
-_ENV.vec = function(input,mode)
+vec = function(input,mode)
     local content = {}
     local size = 0
     if (type(input) == "table") then
@@ -380,3 +383,8 @@ _ENV.vec = function(input,mode)
     ---@cast v vector
     return v
 end
+
+return {
+    vec = vec,
+    mat = mat
+}

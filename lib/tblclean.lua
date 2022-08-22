@@ -1,5 +1,6 @@
 ---@return table
-_ENV.clean = function(input)
+local function clean(input)
+    if (type(input) ~= "table") then error("input needs to be a table",2) end
     local output = {}
     for k, v in pairs(input) do
         if (type(v) ~= "function") then
@@ -14,3 +15,5 @@ _ENV.clean = function(input)
     end
     return output
 end
+
+return clean

@@ -2,11 +2,7 @@
 ---@param v2End vector
 ---@param LL number
 ---@param grid grid
-function _ENV.drawLine(v2Start, v2End, LL, grid)
-
-    _ENV.debug.line = {}
-    _ENV.debug.line.v1 = v2Start
-    _ENV.debug.line.v2 = v2End
+local function drawLine(v2Start, v2End, LL, grid)
 
     if v2Start[1] == v2End[1] and v2Start[2] == v2End[2] then
         grid.SetLightLevel(v2Start[1], v2Start[2], LL)
@@ -58,3 +54,5 @@ function _ENV.drawLine(v2Start, v2End, LL, grid)
         end
     end
 end
+
+return drawLine

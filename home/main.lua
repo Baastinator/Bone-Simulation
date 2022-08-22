@@ -3,15 +3,15 @@
 
 package.path = "/?.lua;/lib/?.lua"
 
-require("mathb")
-require("linalg")
-require("List")
-require("tblclean")
-require("grid")
-require("draw")
-require("point")
-require("bone")
-require("paint")
+local Mathb = require("mathb")
+local linalg = require("linalg")
+local List = require("List")
+local clean = require("tblclean")
+local Grid = require("grid")
+local Draw = require("draw")
+local point = require("point")
+local bone = require("bone")
+local drawLine = require("paint")
 
 -- globals
 
@@ -20,7 +20,9 @@ local Grid = Grid()
 local draw = Draw()
 local gui
 
+---@type res
 local res = {}
+---@type res
 local tres = {}
 
 local debugMode = true
@@ -49,7 +51,7 @@ local function userInput()
         if key == keys.space then
             gameLoop = false
         elseif key == keys.d then
-            local d = nil + 2
+            error("\n\nProgram terminated",0)
         end
         
         key = nil
@@ -79,11 +81,13 @@ local function Start()
     nodes:add(point(0,0,0,0,true))
     nodes:add(point(0.0001,2,0,0))
     nodes:add(point(1,1,0,0))
-    nodes:add(point(-1,1,0,0))
+    nodes:add(point(-1,1,0,0,true))
 
     bones:add(bone(nodes:get(1),nodes:get(2)))
     bones:add(bone(nodes:get(2),nodes:get(3)))
     bones:add(bone(nodes:get(3),nodes:get(4)))
+    bones:add(bone(nodes:get(1),nodes:get(3)))
+    bones:add(bone(nodes:get(2),nodes:get(4)))
     bones:add(bone(nodes:get(4),nodes:get(1)))
 end
 
@@ -96,12 +100,13 @@ local function Update()
     local dt = ccemux.milliTime()-fpsTime
     fpsTime = ccemux.milliTime()
 
-
+    _ENV.debug.speeds = {}
     local speed = 1/1000
 
     local g = 9.81
     for i, n in ipairs(nodes) do
-        local force = vec({0,-g*n.mass})
+        local force = linalg.vec({0,-g*n.mass})
+        _ENV.debug.speeds[i] = n.vel
         if (not n.fixed) then
             n.vel = n.vel + (speed * dt * force)
             n.pos = n.pos + (speed * dt * n.vel)
@@ -110,8 +115,13 @@ local function Update()
 
     for i, b in ipairs(bones) do
         local ab = b.B.pos - b.A.pos
-        ab = b.length / ab:length() * ab
-        b.B.pos = b.A.pos + ab
+        local abN = b.length / ab:length() * ab
+        if (not b.A.fixed) then
+            b.A.pos = b.A.pos + (1/2 * ab - 1/2 * abN)        
+        end
+        if (not b.B.fixed) then
+            b.B.pos = b.B.pos - (1/2 * ab - 1/2 * abN) 
+        end
     end
 end
 
@@ -133,7 +143,7 @@ local function Render()
 
     for iB, b in ipairs(bones) do
 ---@diagnostic disable-next-line: param-type-mismatch
-        drawLine(scale * b.A.pos + vec({res.x/2, res.y/2}), scale * b.B.pos + vec({res.x/2, res.y/2}),1,Grid)
+        drawLine(scale * b.A.pos + linalg.vec({res.x/2, res.y/2}), scale * b.B.pos + linalg.vec({res.x/2, res.y/2}),1,Grid)
         -- local m = (b.A.pos[2] - b.B.pos[2]) / (b.A.pos[1] - b.B.pos[1])
         -- local aR = false
         -- local aD = false

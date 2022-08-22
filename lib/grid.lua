@@ -13,7 +13,7 @@
 ---@field init function
 
 ---@return grid
-_ENV.Grid = function()
+local function Grid()
     local grid = {}
     ---@type res
     local res = {}
@@ -48,8 +48,6 @@ _ENV.Grid = function()
         if (X >= 1 and Y >= 1 and Y < res.y and X < res.x) then
             X = math.floor(X)
             Y = math.floor(Y)
-            _ENV.debug.x = X 
-            _ENV.debug.y = Y
             grid[Y][X] = Value
         end
     end
@@ -88,3 +86,5 @@ _ENV.Grid = function()
         init = init
     }
 end
+
+return Grid
