@@ -12,7 +12,9 @@ local function bone(A, B)
     return setmetatable({
         A = A,
         B = B,
-        length = (B.pos - A.pos):length()
+        k_s = 1,
+        k_d = 1, 
+        L0 = (B.pos - A.pos):length()
     },{})
 end
 

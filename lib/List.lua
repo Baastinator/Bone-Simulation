@@ -5,11 +5,11 @@
 ---@field public remove function
 ---@field public clear function
 
-
 ---@param element any list element to add
 local function add(self,element)
+    element.id = self.idCounter
+    self.idCounter = self.idCounter + 1
     table.insert(self,element)
-    return #self
 end
 
 ---@param index number id to pull
@@ -40,6 +40,14 @@ local function clear(self)
     end
 end
 
+local function find(self,id)
+    for i,v in ipairs(self) do
+        if id == v.id then
+            return v
+        end
+    end
+end
+
 ---@generic T
 ---@param type string type of list
 ---@return list
@@ -53,7 +61,9 @@ local function List(type)
             set = set,
             remove = remove,
             get = get,
-            add = add
+            add = add,
+            find = find,
+            idCounter = 1
         }
     })
 end

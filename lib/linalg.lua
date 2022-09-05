@@ -98,7 +98,7 @@ local matrix = {
         if (type(self) == "table" and type(b) == "number") or (type(self) == "number" and type(b) == "table") then
             local A, B
             if (type(self) == "table") then
-                if not (self.type:match("mat") == "mat") then error("bad types",2) end
+                if not (self.Type:match("mat") == "mat") then error("bad types",2) end
                 A = self
                 B = b
             else
@@ -115,11 +115,20 @@ local matrix = {
             return m
         elseif (type(self) == "table" and type(b) == "table") then
             if (self.Type:match("mat") ~= "mat" or b.Type:match("mat") ~= "mat") then error("bad types",2) end
+            if (self.Type == "mat.vec" and b.Type == "mat.vec") then 
+                local sum = 0
+                for i=1, self.ySize do
+                    sum = sum + (self:vdGet(i) * b:vGet(i))
+                end
+                return sum
+            end
             local aSize = self:getSize()
             local bSize = b:getSize()
             local ay, ax = aSize.y, aSize.x
             local by, bx = bSize.y, bSize.x
-            if (ax ~= by) then error("invalid size match",2) end
+            if (ax ~= by) then 
+                error("invalid size match",2) 
+            end
             local m = mat(bx,ay)
             for i=1,ay do
                 for j=1,bx do
@@ -359,6 +368,7 @@ vec = function(input,mode)
     ---@type matrix
     local v = mat(1,size)
     v.Type = "mat.vec"
+    v.bruh = "bruh"
     if (size == 4) then
         v.x = content[1]
         v.y = content[2]

@@ -4,7 +4,7 @@
 package.path = "/?.lua;/lib/?.lua"
 
 local Mathb = require("mathb")
-local linalg = require("linalg")
+local la = require("linalg")
 local List = require("List")
 local clean = require("tblclean")
 local Grid = require("grid")
@@ -28,7 +28,6 @@ local tres = {}
 local debugMode = true
 local gameLoop = true
 local paused = false
-local UPS = 165
 local framesElapsed = 0
 _ENV.debug = {}
 
@@ -100,27 +99,21 @@ local function Update()
     local dt = ccemux.milliTime()-fpsTime
     fpsTime = ccemux.milliTime()
 
-    _ENV.debug.speeds = {}
+    debug.nodes = nodes
     local speed = 1/1000
-
     local g = 9.81
+    local force = {}
+
     for i, n in ipairs(nodes) do
-        local force = linalg.vec({0,-g*n.mass})
-        _ENV.debug.speeds[i] = n.vel
-        if (not n.fixed) then
-            n.vel = n.vel + (speed * dt * force)
-            n.pos = n.pos + (speed * dt * n.vel)
-        end
+        force[i] = (
+            la.vec({0,-g}) --gravity
+        )
     end
 
-    for i, b in ipairs(bones) do
-        local ab = b.B.pos - b.A.pos
-        local abN = b.length / ab:length() * ab
-        if (not b.A.fixed) then
-            b.A.pos = b.A.pos + (1/2 * ab - 1/2 * abN)        
-        end
-        if (not b.B.fixed) then
-            b.B.pos = b.B.pos - (1/2 * ab - 1/2 * abN) 
+    for i, n in ipairs(nodes) do
+        if (not n.fixed) then
+            n.vel = n.vel + (speed * dt * force[i] * (1 / n.mass))
+            n.pos = n.pos + (speed * dt * n.vel)
         end
     end
 end
@@ -143,39 +136,7 @@ local function Render()
 
     for iB, b in ipairs(bones) do
 ---@diagnostic disable-next-line: param-type-mismatch
-        drawLine(scale * b.A.pos + linalg.vec({res.x/2, res.y/2}), scale * b.B.pos + linalg.vec({res.x/2, res.y/2}),1,Grid)
-        -- local m = (b.A.pos[2] - b.B.pos[2]) / (b.A.pos[1] - b.B.pos[1])
-        -- local aR = false
-        -- local aD = false
-        -- if (b.A.pos[1] > b.B.pos[1]) then aR = true end
-        -- if (b.A.pos[2] < b.B.pos[2]) then aD = true end
-        -- for y=-res.y/2,res.y/2 do
-        --     for x=-res.x/2,res.x/2 do
-        --         if (math.abs(y-m*x-scale*b.A.pos[2]) < 3) then
-        --             if not aD then
-        --                 if not aR then
-        --                     if (y < scale*b.A.pos[2] and y > scale*b.B.pos[2] and x > scale*b.A.pos[1] and x < scale*b.B.pos[1]) then
-        --                         Grid.SetLightLevel(res.x/2+x,res.y/2+y,1)
-        --                     end
-        --                 else
-        --                     if (y < scale*b.A.pos[2] and y > scale*b.B.pos[2] and x < scale*b.A.pos[1] and x > scale*b.B.pos[1]) then
-        --                         Grid.SetLightLevel(res.x/2+x,res.y/2+y,1)
-        --                     end
-        --                 end
-        --             else
-        --                 if not aR then
-        --                     if (y > scale*b.A.pos[2] and y < scale*b.B.pos[2] and x > scale*b.A.pos[1] and x < scale*b.B.pos[1]) then
-        --                         Grid.SetLightLevel(res.x/2+x,res.y/2+y,1)
-        --                     end
-        --                 else                            
-        --                     if (y > scale*b.A.pos[2] and y < scale*b.B.pos[2] and x < scale*b.A.pos[1] and x > scale*b.B.pos[1]) then
-        --                         Grid.SetLightLevel(res.x/2+x,res.y/2+y,1)
-        --                     end
-        --                 end
-        --             end
-        --         end
-        --     end
-        -- end
+        drawLine(scale * b.A.pos + la.vec({res.x/2, res.y/2}), scale * b.B.pos + la.vec({res.x/2, res.y/2}),1,Grid)
     end
 
     for i=1,res.x do
